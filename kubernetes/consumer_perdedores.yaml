@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-consumer-go-winners
+  namespace: sopes1
+spec:
+  selector:
+    matchLabels:
+      app: kafka-consumer-go-winners
+  template:
+    metadata:
+      labels:
+        app: kafka-consumer-go-winners
+    spec:
+      containers:
+      - name: kafka-consumer-go-winners
+        image: mrpony21/consumer-winners:0.2
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "0.1"
+        env:
+        - name: KAFKA_BROKER
+          value: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+        - name: KAFKA_TOPIC
+          value: "winners"
+        - name: REDIS_HOST
+          value: "redis-service"  # Servicio de Redis
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          value: "5TqnU2dnWG"
+        ports:
+        - containerPort: 9090  # Cambié el puerto para evitar conflictos
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-consumer-go-winners-service #DNS del servicio
+  namespace: sopes1
+spec:
+  selector:
+    app: kafka-consumer-go-winners
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+  type: NodePort  # Cambia a ClusterIP si no necesitas acceso externo

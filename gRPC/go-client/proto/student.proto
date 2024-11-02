@@ -1,0 +1,32 @@
+syntax = "proto3";
+option go_package = "./;student";
+
+package student;
+
+
+// Servicios
+service Student {
+    rpc GetStudent(StudentRequest) returns (StudentResponse);
+}
+
+
+// Mensajes
+message StudentRequest {
+    string student = 1;
+    int32 age = 3;
+    string faculty = 2;
+    Discipline discipline = 4;
+}
+
+
+enum Discipline {
+    SinUsar = 0;
+    Natacion = 1;
+    Atletismo = 2;
+    Boxeo = 3;
+}
+
+
+message StudentResponse {
+    bool success = 1;
+}
